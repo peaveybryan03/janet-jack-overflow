@@ -1,11 +1,17 @@
 package learn.janet.models;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.Objects;
 
 public class Question {
     private int id;
+
+    @NotBlank(message = "Question text is required.")
     private String text;
+
     private boolean isEdited;
+
     private int userId;
 
     public Question(int id, String text, boolean isEdited, int userId) {
