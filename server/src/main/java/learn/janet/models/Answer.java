@@ -1,11 +1,17 @@
 package learn.janet.models;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.Objects;
 
 public class Answer {
     private int id;
+
+    @NotBlank(message = "Answer text is required.")
     private String text;
+
     private int questionId;
+
     private int userId;
 
     public Answer(int id, String text, int questionId, int userId) {
