@@ -2,7 +2,7 @@ DROP database IF EXISTS janet_test;
 CREATE database janet_test;
 use janet_test;
 
-CREATE TABLE user (
+CREATE TABLE users (
 	id int PRIMARY KEY auto_increment, 
 	`name` varchar(256) NOT NULL,
 	email varchar(256) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE question (
 	user_id int NOT NULL,
 	CONSTRAINT fk_question_user_id
 		FOREIGN KEY (user_id)
-		REFERENCES user(id)
+		REFERENCES users(id)
 );
 
 CREATE TABLE answer (
@@ -31,7 +31,7 @@ CREATE TABLE answer (
 		REFERENCES question(id),
 	CONSTRAINT fk_answer_user_id
 		FOREIGN KEY (user_id)
-		REFERENCES user(id)
+		REFERENCES users(id)
 );
 
 delimiter //
@@ -41,10 +41,10 @@ begin
 	alter table answer auto_increment = 1;
 	delete from question;
 	alter table question auto_increment = 1;
-	delete from user;
-	alter table user auto_increment = 1;
+	delete from users;
+	alter table users auto_increment = 1;
 	
-	insert into user (name, email, password) values
+	insert into users (`name`, email, password) values
 		("bryanpeavey", "peaveybryan03@gmail.com", "janetluvr"),
 		("ryl33jaxun", "rdmeadows@gmail.com", "whoisjanet");
 end //
