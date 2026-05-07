@@ -2,7 +2,9 @@ package learn.janet.data;
 
 import learn.janet.models.User;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class UserJdbcClientRepository implements UserRepository {
     private final JdbcClient jdbcClient;
 
