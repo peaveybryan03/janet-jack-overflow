@@ -23,6 +23,18 @@
     </parent>
 
     <dependencies>
+        <!-- Database dependencies -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>6.2.12</version>
+        </dependency>
+        <!-- MySQL Driver -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
         <!-- Spring MVC -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
