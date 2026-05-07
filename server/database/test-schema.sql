@@ -44,7 +44,8 @@ begin
 	delete from user;
 	alter table user auto_increment = 1;
 	
-	-- insert statements go here
-
+	insert into user (name, email, password) values
+		("bryanpeavey", "peaveybryan03@gmail.com", "janetluvr"),
+		("ryl33jaxun", "rdmeadows@gmail.com", "whoisjanet");
 end //
 delimiter ;
