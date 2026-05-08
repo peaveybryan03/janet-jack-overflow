@@ -13,6 +13,19 @@ Content-Type: application/json
 
 ###
 
+# CREATE blank name
+
+POST {{base_url}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "",
+    "email": "email@gmail.com",
+    "password": "password"
+}
+
+###
+
 # CREATE blank email
 
 POST {{base_url}} HTTP/1.1
@@ -33,7 +46,7 @@ Content-Type: application/json
 
 {
     "name": "name",
-    "email": "valid@email.com",
+    "email": "email@email.com",
     "password": ""
 }
 
