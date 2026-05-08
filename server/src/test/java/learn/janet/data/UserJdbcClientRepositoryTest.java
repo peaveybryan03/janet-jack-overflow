@@ -1,5 +1,6 @@
 package learn.janet.data;
 
+import learn.janet.TestHelper;
 import learn.janet.models.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,8 +26,8 @@ class UserJdbcClientRepositoryTest {
 
     @Test
     void shouldCreate() {
-        User toCreate = TestDataHelper.userToCreate();
-        User expected = TestDataHelper.userToCreate();
+        User toCreate = TestHelper.userToCreate();
+        User expected = TestHelper.userToCreate();
         expected.setId(3);
 
         User actual = repository.create(toCreate);
