@@ -14,14 +14,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static learn.janet.TestHelper.userAfterCreate;
-import static learn.janet.TestHelper.userToCreate;
+import static learn.janet.TestHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
 class UserControllerTest {
@@ -37,7 +37,59 @@ class UserControllerTest {
     UserService service;
 
     @Test
-    void shouldReturn400WhenNameBlank() throws Exception {
+    void findByEmailShouldReturn404WhenNotFound() throws Exception {
+        Result<User> result = new Result<>();
+        result.addErrorMessage("User not found.", ResultType.NOT_FOUND);
+
+        when(service.findByEmail(anyString())).thenReturn(result);
+
+        mockMvc.perform(get("/api/user/email/notinrepo@gmail.com"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldFindByEmail() throws Exception {
+        User expectedUser = existingUser();
+        String expectedContent = objectMapper.writeValueAsString(expectedUser);
+
+        Result<User> result = new Result<>();
+        result.setPayload(expectedUser);
+
+        when(service.findByEmail(anyString())).thenReturn(result);
+
+        mockMvc.perform(get("/api/user/email/peaveybryan03@gmail.com"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedContent));
+    }
+
+    @Test
+    void findByNameShouldReturn404WhenNotFound() throws Exception {
+        Result<User> result = new Result<>();
+        result.addErrorMessage("User not found.", ResultType.NOT_FOUND);
+
+        when(service.findByName(anyString())).thenReturn(result);
+
+        mockMvc.perform(get("/api/user/name/notinrepo"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldFindByName() throws Exception {
+        User expectedUser = existingUser();
+        String expectedContent = objectMapper.writeValueAsString(expectedUser);
+
+        Result<User> result = new Result<>();
+        result.setPayload(expectedUser);
+
+        when(service.findByName(anyString())).thenReturn(result);
+
+        mockMvc.perform(get("/api/user/name/bryanpeavey"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedContent));
+    }
+
+    @Test
+    void createShouldReturn400WhenNameBlank() throws Exception {
         User user = userToCreate();
         user.setName("");
 
@@ -50,7 +102,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldReturn400WhenEmailBlank() throws Exception {
+    void createShouldReturn400WhenEmailBlank() throws Exception {
         User user = userToCreate();
         user.setEmail("");
 
@@ -76,7 +128,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldReturn409WhenNameDuplicate() throws Exception {
+    void createShouldReturn409WhenNameDuplicate() throws Exception {
         Result<User> result = new Result<>();
         result.addErrorMessage("Name is already taken.", ResultType.CONFLICT);
 
@@ -94,7 +146,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldReturn409WhenEmailDuplicate() throws Exception {
+    void createShouldReturn409WhenEmailDuplicate() throws Exception {
         Result<User> result = new Result<>();
         result.addErrorMessage("Email is already taken.", ResultType.CONFLICT);
 

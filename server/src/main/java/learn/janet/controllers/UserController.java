@@ -1,6 +1,7 @@
 package learn.janet.controllers;
 
 import jakarta.validation.Valid;
+import learn.janet.data.DataAccessException;
 import learn.janet.domain.Result;
 import learn.janet.domain.UserService;
 import learn.janet.models.User;
@@ -18,6 +19,28 @@ public class UserController {
 
     public UserController(UserService service) {
         this.service = service;
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Object> findByEmail(@PathVariable("email") String email) throws DataAccessException {
+        Result<User> result = service.findByEmail(email);
+
+        if (!result.isSuccess()) {
+            return ErrorResponse.build(result);
+        }
+
+        return new ResponseEntity<>(result.getPayload(), HttpStatus.OK);
+    }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<Object> findByName(@PathVariable("name") String name) throws DataAccessException {
+        Result<User> result = service.findByName(name);
+
+        if (!result.isSuccess()) {
+            return ErrorResponse.build(result);
+        }
+
+        return new ResponseEntity<>(result.getPayload(), HttpStatus.OK);
     }
 
     @PostMapping
