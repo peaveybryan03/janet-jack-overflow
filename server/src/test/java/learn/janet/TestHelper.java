@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class TestHelper {
     public static User existingUser() {
-        return new User(1, "bryanpeavey", "peaveybryan03@gmail.com", "janetluvr");
+        return new User(1, "bryanpeavey", "peaveybryan03@gmail.com", "780429354");
     }
 
     public static User userToCreate() {
@@ -16,7 +16,6 @@ public class TestHelper {
     public static User userAfterCreate() {
         User user = userToCreate();
         user.setId(3);
-        user.setPassword(String.valueOf(Objects.hash(user.getPassword())));
         return user;
     }
 }
