@@ -41,6 +41,21 @@ class UserJdbcClientRepositoryTest {
     }
 
     @Test
+    void shouldNotFindByNameWhenDoesNotExist() {
+        User actual = repository.findByName("notinrepo");
+
+        assertNull(actual);
+    }
+
+    @Test
+    void shouldFindByNameWhenExists() {
+        User actual = repository.findByName(existingUser().getName());
+
+        assertNotNull(actual);
+        assertEquals(existingUser(), actual);
+    }
+
+    @Test
     void shouldCreate() {
         User toCreate = TestHelper.userToCreate();
         User expected = TestHelper.userToCreate();
