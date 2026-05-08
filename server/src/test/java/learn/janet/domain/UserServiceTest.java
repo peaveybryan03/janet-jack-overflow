@@ -61,7 +61,7 @@ class UserServiceTest {
 
         Result<User> actual = service.create(userToCreate());
 
-        assertEquals(ResultType.INVALID, actual.getResultType());
+        assertEquals(ResultType.CONFLICT, actual.getResultType());
         assertTrue(actual.getErrorMessages().contains("Email is already taken."));
         */
     }

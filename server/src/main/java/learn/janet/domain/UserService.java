@@ -34,7 +34,7 @@ public class UserService {
 
         /*
         if (repository.findByEmail(user.getEmail()) != null) {
-            result.addErrorMessage("Email is already taken.", ResultType.INVALID);
+            result.addErrorMessage("Email is already taken.", ResultType.CONFLICT);
         }
         */
 
