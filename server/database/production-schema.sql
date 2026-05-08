@@ -8,7 +8,9 @@ CREATE TABLE user (
 	email varchar(256) NOT NULL,
 	password varchar(256) NOT NULL,
 	CONSTRAINT uq_user_email
-		UNIQUE (email)
+		UNIQUE (email),
+	constraint uq_user_name
+		unique (`name`)
 );
 
 CREATE TABLE question (
