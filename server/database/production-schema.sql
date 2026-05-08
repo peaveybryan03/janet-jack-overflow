@@ -2,13 +2,15 @@ DROP database IF EXISTS janet;
 CREATE database janet;
 use janet;
 
-CREATE TABLE user (
+CREATE TABLE users (
 	id int PRIMARY KEY auto_increment, 
 	`name` varchar(256) NOT NULL,
 	email varchar(256) NOT NULL,
 	password varchar(256) NOT NULL,
 	CONSTRAINT uq_user_email
-		UNIQUE (email)
+		UNIQUE (email),
+	constraint uq_user_name
+		unique (`name`)
 );
 
 CREATE TABLE question (
@@ -18,7 +20,7 @@ CREATE TABLE question (
 	user_id int NOT NULL,
 	CONSTRAINT fk_question_user_id
 		FOREIGN KEY (user_id)
-		REFERENCES user(id)
+		REFERENCES users(id)
 );
 
 CREATE TABLE answer (
@@ -31,5 +33,5 @@ CREATE TABLE answer (
 		REFERENCES question(id),
 	CONSTRAINT fk_answer_user_id
 		FOREIGN KEY (user_id)
-		REFERENCES user(id)
+		REFERENCES users(id)
 );
