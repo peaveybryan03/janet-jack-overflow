@@ -20,6 +20,32 @@ public class UserService {
         this.validator = validator;
     }
 
+    public Result<User> findByEmail(String email) throws DataAccessException {
+        User found = repository.findByEmail(email);
+        Result<User> result = new Result<>();
+
+        if (found == null) {
+            result.addErrorMessage("User not found.", ResultType.NOT_FOUND);
+        } else {
+            result.setPayload(found);
+        }
+
+        return result;
+    }
+
+    public Result<User> findByName(String name) throws DataAccessException {
+        User found = repository.findByName(name);
+        Result<User> result = new Result<>();
+
+        if (found == null) {
+            result.addErrorMessage("User not found.", ResultType.NOT_FOUND);
+        } else {
+            result.setPayload(found);
+        }
+
+        return result;
+    }
+
     public Result<User> create(User user) throws DataAccessException {
         Result<User> result = new Result<>();
 
@@ -32,11 +58,11 @@ public class UserService {
             return result;
         }
 
-        /*
         if (repository.findByEmail(user.getEmail()) != null) {
             result.addErrorMessage("Email is already taken.", ResultType.CONFLICT);
+        } else if (repository.findByName(user.getName()) != null) {
+            result.addErrorMessage("Name is already taken.", ResultType.CONFLICT);
         }
-        */
 
         if (result.isSuccess()) {
             int passwordHash = Objects.hash(user.getPassword());

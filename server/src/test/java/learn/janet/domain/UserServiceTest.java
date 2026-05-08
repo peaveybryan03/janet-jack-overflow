@@ -22,6 +22,26 @@ class UserServiceTest {
     UserRepository repository;
 
     @Test
+    void shouldReturnNotFoundWhenFindByEmailThatDNE() {
+        when (repository.findByEmail(anyString())).thenReturn(null);
+
+        Result<User> actual = service.findByEmail("notinrepo@gmail.com");
+
+        assertFalse(actual.isSuccess());
+        assertEquals(ResultType.NOT_FOUND, actual.getResultType());
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenFindByNameThatDNE() {
+        when (repository.findByName(anyString())).thenReturn(null);
+
+        Result<User> actual = service.findByEmail("notinrepo");
+
+        assertFalse(actual.isSuccess());
+        assertEquals(ResultType.NOT_FOUND, actual.getResultType());
+    }
+
+    @Test
     void createFailsWhenNameIsBlank() {
         User toCreate = userToCreate();
         toCreate.setName("");
@@ -30,6 +50,16 @@ class UserServiceTest {
 
         assertEquals(ResultType.INVALID, actual.getResultType());
         assertTrue(actual.getErrorMessages().contains("Name is required."));
+    }
+
+    @Test
+    void createFailsWhenNameIsDuplicate() {
+        when(repository.findByName(userToCreate().getName())).thenReturn(existingUser());
+
+        Result<User> actual = service.create(userToCreate());
+
+        assertEquals(ResultType.CONFLICT, actual.getResultType());
+        assertTrue(actual.getErrorMessages().contains("Name is already taken."));
     }
 
     @Test
@@ -56,14 +86,12 @@ class UserServiceTest {
 
     @Test
     void createFailsWhenEmailIsDuplicate() {
-        /*
         when(repository.findByEmail(userToCreate().getEmail())).thenReturn(existingUser());
 
         Result<User> actual = service.create(userToCreate());
 
         assertEquals(ResultType.CONFLICT, actual.getResultType());
         assertTrue(actual.getErrorMessages().contains("Email is already taken."));
-        */
     }
 
     @Test

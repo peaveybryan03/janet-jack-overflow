@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.simple.JdbcClient;
 
+import static learn.janet.TestHelper.existingUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -22,6 +23,36 @@ class UserJdbcClientRepositoryTest {
     @BeforeEach
     void setup() {
         jdbcClient.sql("call set_known_good_state();").update();
+    }
+
+    @Test
+    void shouldNotFindByEmailWhenDoesNotExist() {
+        User actual = repository.findByEmail("notinrepo@gmail.com");
+
+        assertNull(actual);
+    }
+
+    @Test
+    void shouldFindByEmailWhenExists() {
+        User actual = repository.findByEmail(existingUser().getEmail());
+
+        assertNotNull(actual);
+        assertEquals(existingUser(), actual);
+    }
+
+    @Test
+    void shouldNotFindByNameWhenDoesNotExist() {
+        User actual = repository.findByName("notinrepo");
+
+        assertNull(actual);
+    }
+
+    @Test
+    void shouldFindByNameWhenExists() {
+        User actual = repository.findByName(existingUser().getName());
+
+        assertNotNull(actual);
+        assertEquals(existingUser(), actual);
     }
 
     @Test

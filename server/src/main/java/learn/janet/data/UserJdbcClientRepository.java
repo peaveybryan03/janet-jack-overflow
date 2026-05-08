@@ -15,6 +15,32 @@ public class UserJdbcClientRepository implements UserRepository {
     }
 
     @Override
+    public User findByEmail(String email) throws DataAccessException {
+        final String sql = """
+                select * from users
+                where users.email = :email;
+                """;
+
+        return jdbcClient.sql(sql)
+                .param("email", email)
+                .query(User.class)
+                .optional().orElse(null);
+    }
+
+    @Override
+    public User findByName(String name) throws DataAccessException {
+        final String sql = """
+                select * from users
+                where users.name = :name;
+                """;
+
+        return jdbcClient.sql(sql)
+                .param("name", name)
+                .query(User.class)
+                .optional().orElse(null);
+    }
+
+    @Override
     public User create(User user) throws DataAccessException {
         final String sql = """
                 insert into users (name, email, password)
