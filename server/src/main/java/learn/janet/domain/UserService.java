@@ -46,6 +46,28 @@ public class UserService {
         return result;
     }
 
+    public Result<User> authenticate(User user) throws DataAccessException {
+        Result<User> result = new Result<>();
+
+        User userFromDatabase = repository.findByEmail(user.getEmail());
+
+        if (userFromDatabase == null) {
+            result.addErrorMessage("User does not exist.", ResultType.NOT_FOUND);
+            return result;
+        }
+
+        int hashedPassword = Objects.hash(user.getPassword());
+        String hashedPasswordString = String.valueOf(hashedPassword);
+
+        if (userFromDatabase.getPassword().equals(hashedPasswordString)) {
+            result.setPayload(userFromDatabase);
+        } else {
+            result.addErrorMessage("Incorrect password.", ResultType.INVALID);
+        }
+
+        return result;
+    }
+
     public Result<User> create(User user) throws DataAccessException {
         Result<User> result = new Result<>();
 

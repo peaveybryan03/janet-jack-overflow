@@ -42,6 +42,44 @@ class UserServiceTest {
     }
 
     @Test
+    void shouldNotAuthenticateWhenNotFound() {
+        User toAuthenticate = loginUser();
+        toAuthenticate.setEmail("notindb@gmail.com");
+
+        when(repository.findByEmail(toAuthenticate.getEmail())).thenReturn(null);
+
+        Result<User> actual = service.authenticate(toAuthenticate);
+
+        assertFalse(actual.isSuccess());
+        assertEquals(ResultType.NOT_FOUND, actual.getResultType());
+    }
+
+    @Test
+    void shouldNotAuthenticateWhenIncorrectPassword() {
+        User toAuthenticate = loginUser();
+        toAuthenticate.setPassword("wrongpassword");
+
+        when(repository.findByEmail(toAuthenticate.getEmail())).thenReturn(existingUser());
+
+        Result<User> actual = service.authenticate(toAuthenticate);
+
+        assertFalse(actual.isSuccess());
+        assertEquals(ResultType.INVALID, actual.getResultType());
+    }
+
+    @Test
+    void shouldAuthenticate() {
+        User toAuthenticate = loginUser();
+
+        when(repository.findByEmail(toAuthenticate.getEmail())).thenReturn(existingUser());
+
+        Result<User> actual = service.authenticate(toAuthenticate);
+
+        assertTrue(actual.isSuccess());
+        assertEquals(existingUser(), actual.getPayload());
+    }
+
+    @Test
     void createFailsWhenNameIsBlank() {
         User toCreate = userToCreate();
         toCreate.setName("");
