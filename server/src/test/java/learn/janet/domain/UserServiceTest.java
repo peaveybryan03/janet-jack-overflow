@@ -33,6 +33,16 @@ class UserServiceTest {
     }
 
     @Test
+    void createFailsWhenNameIsDuplicate() {
+        when(repository.findByName(userToCreate().getName())).thenReturn(existingUser());
+
+        Result<User> actual = service.create(userToCreate());
+
+        assertEquals(ResultType.CONFLICT, actual.getResultType());
+        assertTrue(actual.getErrorMessages().contains("Name is already taken."));
+    }
+
+    @Test
     void createFailsWhenEmailIsBlank() {
         User toCreate = userToCreate();
         toCreate.setEmail("");
@@ -56,14 +66,12 @@ class UserServiceTest {
 
     @Test
     void createFailsWhenEmailIsDuplicate() {
-        /*
         when(repository.findByEmail(userToCreate().getEmail())).thenReturn(existingUser());
 
         Result<User> actual = service.create(userToCreate());
 
         assertEquals(ResultType.CONFLICT, actual.getResultType());
         assertTrue(actual.getErrorMessages().contains("Email is already taken."));
-        */
     }
 
     @Test

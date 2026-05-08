@@ -20,6 +20,14 @@ public class UserService {
         this.validator = validator;
     }
 
+    public User findByEmail(String email) throws DataAccessException {
+        return repository.findByEmail(email);
+    }
+
+    public User findByName(String name) throws DataAccessException {
+        return repository.findByName(name);
+    }
+
     public Result<User> create(User user) throws DataAccessException {
         Result<User> result = new Result<>();
 
@@ -32,11 +40,11 @@ public class UserService {
             return result;
         }
 
-        /*
         if (repository.findByEmail(user.getEmail()) != null) {
             result.addErrorMessage("Email is already taken.", ResultType.CONFLICT);
+        } else if (repository.findByName(user.getName()) != null) {
+            result.addErrorMessage("Name is already taken.", ResultType.CONFLICT);
         }
-        */
 
         if (result.isSuccess()) {
             int passwordHash = Objects.hash(user.getPassword());
