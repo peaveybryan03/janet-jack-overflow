@@ -22,6 +22,26 @@ class UserServiceTest {
     UserRepository repository;
 
     @Test
+    void shouldReturnNotFoundWhenFindByEmailThatDNE() {
+        when (repository.findByEmail(anyString())).thenReturn(null);
+
+        Result<User> actual = service.findByEmail("notinrepo@gmail.com");
+
+        assertFalse(actual.isSuccess());
+        assertEquals(ResultType.NOT_FOUND, actual.getResultType());
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenFindByNameThatDNE() {
+        when (repository.findByName(anyString())).thenReturn(null);
+
+        Result<User> actual = service.findByEmail("notinrepo");
+
+        assertFalse(actual.isSuccess());
+        assertEquals(ResultType.NOT_FOUND, actual.getResultType());
+    }
+
+    @Test
     void createFailsWhenNameIsBlank() {
         User toCreate = userToCreate();
         toCreate.setName("");
