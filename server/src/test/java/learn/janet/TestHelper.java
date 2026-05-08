@@ -9,6 +9,10 @@ public class TestHelper {
         return new User(1, "bryanpeavey", "peaveybryan03@gmail.com", "780429354");
     }
 
+    public static User loginUser() {
+        return new User (1, "bryanpeavey", "peaveybryan03@gmail.com", "janetluvr");
+    }
+
     public static User userToCreate() {
         return new User(0, "janetjackson", "iamjanet@hotmail.com", "iamliterallyjanet");
     }

@@ -1,14 +1,21 @@
 package learn.janet.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import learn.janet.data.DataAccessException;
 import learn.janet.domain.Result;
+import learn.janet.domain.ResultType;
 import learn.janet.domain.UserService;
 import learn.janet.models.User;
+import learn.janet.models.UserNoPasswordDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/user")
@@ -41,6 +48,35 @@ public class UserController {
         }
 
         return new ResponseEntity<>(result.getPayload(), HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@RequestBody @Valid User user, BindingResult bindingResult) throws JsonProcessingException {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
+        }
+
+        Result<User> serviceResult = service.authenticate(user);
+
+        if (serviceResult.getResultType() == ResultType.NOT_FOUND) {
+            return new ResponseEntity<>(serviceResult.getErrorMessages(), HttpStatus.NOT_FOUND);
+        } else if (serviceResult.getResultType() == ResultType.INVALID) {
+            return new ResponseEntity<>(serviceResult.getErrorMessages(), HttpStatus.UNAUTHORIZED);
+        }
+
+        UserNoPasswordDto userDto = UserNoPasswordDto.fromUser(serviceResult.getPayload());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userJson = objectMapper.writeValueAsString(userDto);
+
+        String userJsonWithSecretString = userJson + "this is a secret";
+
+        int hashTotal = Objects.hash(userJsonWithSecretString);
+
+        String outputString = userJson + "|" + hashTotal;
+        Map<String, String> outputMap = Map.of("user", outputString);
+
+        return new ResponseEntity<>(outputMap, HttpStatus.OK);
     }
 
     @PostMapping

@@ -89,6 +89,60 @@ class UserControllerTest {
     }
 
     @Test
+    void authenticateShouldReturn404WhenUserNotFound() throws Exception {
+        User toAuthenticate = loginUser();
+        loginUser().setEmail("notinrepo@gmail.com");
+
+        String json = objectMapper.writeValueAsString(toAuthenticate);
+
+        Result<User> result = new Result<>();
+        result.addErrorMessage("User does not exist.", ResultType.NOT_FOUND);
+
+        when(service.authenticate(toAuthenticate)).thenReturn(result);
+
+        mockMvc.perform(post("/api/user/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void authenticateShouldReturn401WhenIncorrectPassword() throws Exception {
+        User toAuthenticate = loginUser();
+        loginUser().setPassword("incorrect");
+
+        String json = objectMapper.writeValueAsString(toAuthenticate);
+
+        Result<User> result = new Result<>();
+        result.addErrorMessage("Incorrect password.", ResultType.INVALID);
+
+        when(service.authenticate(toAuthenticate)).thenReturn(result);
+
+        mockMvc.perform(post("/api/user/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldAuthenticate() throws Exception {
+        User toAuthenticate = loginUser();
+
+        String json = objectMapper.writeValueAsString(toAuthenticate);
+
+        Result<User> result = new Result<>();
+        result.setPayload(toAuthenticate);
+
+        when(service.authenticate(toAuthenticate)).thenReturn(result);
+
+        mockMvc.perform(post("/api/user/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk());
+        // should I check the content?
+    }
+
+    @Test
     void createShouldReturn400WhenNameBlank() throws Exception {
         User user = userToCreate();
         user.setName("");
