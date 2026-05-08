@@ -1,0 +1,64 @@
+@base_url = http://localhost:8080/api/user
+
+# CREATE happy path
+
+POST {{base_url}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "name",
+    "email": "valid@gmail.com",
+    "password": "password"
+}
+
+###
+
+# CREATE blank email
+
+POST {{base_url}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "name",
+    "email": "",
+    "password": "password"
+}
+
+###
+
+# CREATE blank password
+
+POST {{base_url}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "name",
+    "email": "valid@email.com",
+    "password": ""
+}
+
+###
+
+# CREATE duplicate name
+
+POST {{base_url}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "bryanpeavey",
+    "email": "nonduplicate@gmail.com",
+    "password": "password"
+}
+
+###
+
+# CREATE duplicate email
+
+POST {{base_url}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "non-duplicate",
+    "email": "peaveybryan03@gmail.com",
+    "password": "password"
+}
