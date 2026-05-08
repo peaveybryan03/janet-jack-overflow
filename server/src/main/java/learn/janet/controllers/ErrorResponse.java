@@ -27,6 +27,8 @@ public class ErrorResponse {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         if (result.getResultType() == ResultType.NOT_FOUND) {
             status = HttpStatus.NOT_FOUND;
+        } else if (result.getResultType() == ResultType.CONFLICT) {
+            status = HttpStatus.CONFLICT;
         }
         return new ResponseEntity<>(result.getErrorMessages(), status);
     }
